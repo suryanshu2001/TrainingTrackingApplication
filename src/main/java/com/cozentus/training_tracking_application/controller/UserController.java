@@ -40,6 +40,15 @@ public class UserController {
         }
         return ResponseEntity.ok(user);
     }
+    
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
+    	UserDTO user = userService.findByUserEmail(email);
+    	if(user == null) {
+    		return ResponseEntity.notFound().build();
+    	}
+    	return ResponseEntity.ok(user);
+    }
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
@@ -53,12 +62,12 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<UserDTO> getUserByEmail(@RequestBody User user) {
-        UserDTO responseUser = userService.findByUserEmailAndPassword(user.getUserEmail(),user.getUserPassword());
-        if(responseUser == null) {
-        	return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(responseUser);
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<UserDTO> getUserByEmail(@RequestBody User user) {
+//        UserDTO responseUser = userService.findByUserEmailAndPassword(user.getUserEmail(),user.getUserPassword());
+//        if(responseUser == null) {
+//        	return ResponseEntity.notFound().build();
+//        }
+//        return ResponseEntity.ok(responseUser);
+//    }
 }

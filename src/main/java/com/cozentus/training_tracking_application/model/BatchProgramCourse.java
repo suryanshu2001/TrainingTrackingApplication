@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -18,11 +19,19 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "BatchProgramCourse")
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BatchProgramCourse {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,9 +53,17 @@ public class BatchProgramCourse {
     @JsonIgnoreProperties({"batchProgramCourses","programs"})
     private Course course;
     
-    @OneToMany(mappedBy = "batchProgramCourse", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "batchProgramCourse",cascade = CascadeType.ALL)
     @JsonIgnoreProperties("batchProgramCourse")
     private List<BatchProgramCourseTopic> batchProgramCourseTopics;
+    
+    @OneToMany(mappedBy = "batchProgramCourse",cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"batchProgramCourse","attendanceStudents"})
+    private Set<Attendance> attendences;
+    
+    @OneToMany(mappedBy = "batchProgramCourse",cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"batchProgramCourse"})
+    private Set<Evaluation> evaluations;
     
     @ManyToOne
     @JoinColumn(name="teacher_id")
@@ -61,6 +78,27 @@ public class BatchProgramCourse {
     )
     @JsonIgnoreProperties({"teacher","program","topics","batch","course","batchProgramCourses"})
     private Set<Student> students = new HashSet<>();
- 
+    
+ // Helper methods for BPCT
+    public void addBatchProgramCourseTopic(BatchProgramCourseTopic topic) {
+        batchProgramCourseTopics.add(topic);
+        topic.setBatchProgramCourse(this);
+    }
+
+    public void removeBatchProgramCourseTopic(BatchProgramCourseTopic topic) {
+        batchProgramCourseTopics.remove(topic);
+        topic.setBatchProgramCourse(null);
+    }
+
+    // Method to update topics
+    public void updateBatchProgramCourseTopics(Set<BatchProgramCourseTopic> topics) {
+        // Clear existing topics
+        batchProgramCourseTopics.clear();
+        
+        // Add new topics
+        for (BatchProgramCourseTopic topic : topics) {
+            addBatchProgramCourseTopic(topic);
+        }
+    }
     
 }

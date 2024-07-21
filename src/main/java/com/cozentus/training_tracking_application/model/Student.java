@@ -3,10 +3,12 @@ package com.cozentus.training_tracking_application.model;
 import java.util.Date;
 import java.util.Set;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,12 +19,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "Student")
@@ -30,7 +34,8 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Student {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,18 +65,39 @@ public class Student {
     private Set<BatchProgramCourse> batchProgramCourses;
 
     @Column(name="created_date")
-    @CreationTimestamp
     private Date createdDate;
 
     @Column(name="updated_date")
-    @UpdateTimestamp
     private Date updatedDate;
 
     @Column(name="created_by")
-    private String createdBy="admin";
+    private String createdBy;
 
     @Column(name="updated_by")
-    private String updatedBy="admin";
+    private String updatedBy;
+    
+    @PrePersist
+    protected void onCreate() {
+        createdDate = new Date();
+        updatedDate = new Date();
+        createdBy = getCurrentUsername(); // Use the current logged-in user
+        updatedBy = getCurrentUsername(); // Use the current logged-in user
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedDate = new Date();
+        updatedBy = getCurrentUsername(); // Use the current logged-in user
+    }
+
+    private String getCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            return userDetails.getUsername();
+        }
+        return "anonymous";
+    }
 
 }
 

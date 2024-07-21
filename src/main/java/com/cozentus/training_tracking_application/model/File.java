@@ -1,8 +1,9 @@
 package com.cozentus.training_tracking_application.model;
 
-import java.util.Date;
 
-//import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+
 
 @Entity
 @Table(name = "Files")
@@ -24,7 +25,8 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,17 +43,5 @@ public class File {
 
     @Column(name = "file_name", nullable = false)
     private String fileName;
-
-//    @Column(name = "file_path", nullable = false)
-//    private String filePath;
-    
-//    @Column(name = "file_type", nullable = false)
-//    private String fileType;
-
-//    @Column(name = "uploaded_date", nullable = false)
-//    private Date uploadedDate;
-//
-//    @Column(name = "uploaded_by", nullable = false)
-//    private String uploadedBy;
 
 }

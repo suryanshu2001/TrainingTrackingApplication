@@ -35,41 +35,6 @@ public class AttendanceService {
     @Autowired
     private BatchProgramCourseRepository batchProgramCourseRepository;
     
-//    public Attendance saveAttendance(Attendance attendance) {
-//        attendance.setCreatedDate(new Date());
-//        attendance.setUpdatedDate(new Date());
-//        
-//        // Save the attendance first to get the generated ID
-//        Attendance savedAttendance = attendanceRepository.save(attendance);
-//
-//        Optional<BatchProgramCourse> batchProgramCourse = batchProgramCourseRepository.findById(attendance.getBatchProgramCourse().getBatchProgramCourseId());
-//        
-//        if (batchProgramCourse == null) {
-//            log.error("Batch Program Course is null.");
-//            return savedAttendance;
-//        }
-//
-//        Set<Student> students = batchProgramCourse.get().getStudents();
-//        
-//        if (students == null || students.isEmpty()) {
-//            log.error("No students found in Batch Program Course.");
-//            return savedAttendance;
-//        }
-//        Set<AttendanceStudent> attendanceStudents = new HashSet<>();
-//        for (Student student : batchProgramCourse.get().getStudents()) {
-//        	//log.info("entered into saving students in attendence:"+savedAttendance);
-//            AttendanceStudent attendanceStudent = new AttendanceStudent();
-//            attendanceStudent.setAttendance(savedAttendance);
-//            attendanceStudent.setStudent(student);
-//            attendanceStudent.setIsPresent(false);
-//            attendanceStudents.add(attendanceStudent);
-//        }
-//
-//        savedAttendance.setAttendanceStudents(attendanceStudents);
-//        attendanceStudentRepository.saveAll(attendanceStudents);
-//
-//        return savedAttendance;
-//    }
     
     private static final Logger log = LoggerFactory.getLogger(AttendanceService.class);
 

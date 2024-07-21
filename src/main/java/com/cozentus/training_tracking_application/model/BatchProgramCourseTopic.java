@@ -1,10 +1,10 @@
 package com.cozentus.training_tracking_application.model;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,11 +13,17 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "batch_program_course_topic")
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BatchProgramCourseTopic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +32,7 @@ public class BatchProgramCourseTopic {
 
     @ManyToOne
     @JoinColumn(name = "batch_program_course_id")
-    @JsonIgnoreProperties({"batchProgramCourses", "teacher","batch","program","students","course.teachers"})
+    @JsonIgnoreProperties({"batchProgramCourseTopics", "teacher", "batch", "program", "students", "course.teachers"})
     private BatchProgramCourse batchProgramCourse;
 
     @ManyToOne
@@ -37,5 +43,5 @@ public class BatchProgramCourseTopic {
     @Column(name = "percentage_completed")
     @Min(0)
     @Max(100)
-    private Integer percentageCompleted;
+    private Integer percentageCompleted=0;
 }

@@ -52,9 +52,6 @@ public class FileService {
             Topic topic = topicRepository.findById(topicId).orElseThrow(() -> new Exception("Topic not found"));
             File topicFile = new File();
             topicFile.setFileName(file.getOriginalFilename());
-            //topicFile.setFilePath(destinationFile.toString());
-//            topicFile.setUploadedDate(new Date());
-//            topicFile.setUploadedBy(uploadedBy);
             topicFile.setTopic(topic);
             fileRepository.save(topicFile);
         } catch (Exception e) {

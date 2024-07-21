@@ -8,4 +8,6 @@ import com.cozentus.training_tracking_application.model.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByUserEmailAndUserPassword(String userEmail,String userPassword);
+
+	Optional<User> findByUserEmail(String email);
 }

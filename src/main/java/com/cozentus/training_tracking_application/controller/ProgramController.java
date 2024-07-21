@@ -20,9 +20,12 @@ import com.cozentus.training_tracking_application.dto.ProgramWithStudentsDTO;
 import com.cozentus.training_tracking_application.model.Program;
 import com.cozentus.training_tracking_application.service.ProgramService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/programs")
 @CrossOrigin
+@Slf4j
 public class ProgramController {
 
     @Autowired
@@ -31,6 +34,7 @@ public class ProgramController {
     @GetMapping
     public ResponseEntity<List<Program>> getAllPrograms() {
         List<Program> programs = programService.getAllPrograms();
+        log.info("get programs:"+programs);
         return ResponseEntity.ok(programs);
     }
 

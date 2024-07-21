@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import com.cozentus.training_tracking_application.dto.UserDTO;
@@ -12,7 +15,10 @@ import com.cozentus.training_tracking_application.model.User;
 import com.cozentus.training_tracking_application.repository.TeacherRepository;
 import com.cozentus.training_tracking_application.repository.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class UserService {
     @Autowired
     private UserRepository userRepository;
@@ -36,12 +42,13 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public UserDTO findByUserEmailAndPassword(String userEmail, String userPassword) {
-        Optional<User> user=userRepository.findByUserEmailAndUserPassword(userEmail,userPassword);
+    public UserDTO findByUserEmail(String userEmail) {
+        Optional<User> user=userRepository.findByUserEmail(userEmail);
         if(user.isPresent()) {
+        	log.info("user got:"+user.get());
         	UserDTO dto= new UserDTO();
         	dto.setUserEmail(user.get().getUserEmail());
-        	dto.setUserName(user.get().getUsername());
+        	dto.setUserName(user.get().getUserName());
         	Teacher teacher=teacherRepository.findByEmail(user.get().getUserEmail());
         	if(teacher!=null) {
         		dto.setUserId(teacher.getTeacherId());
@@ -54,4 +61,6 @@ public class UserService {
         	return null;
         }
     }
+    
+    
 }

@@ -66,23 +66,6 @@ public class StudentService {
             throw new RuntimeException("Student not found");
         }
 
-//        Student existingStudent = existingStudentOpt.get();
-//        if (!student.getEmail().equals(existingStudent.getEmail()) & emailValidationService.validateEmail(student.getEmail())) {
-//            try {
-//                String password = UUID.randomUUID().toString();
-//                String body = String.format("Welcome to Cozentues Training System, %s! \nEmail: %s \nPassword: %s",
-//                        student.getName(), student.getEmail(), password);
-//                sendEmail(student.getEmail(), "Welcome Email for Student!", body);
-//                
-//            } catch (MailException e) {
-//                e.printStackTrace();
-//                throw new RuntimeException("Failed to send email. Email address may be invalid.");
-//            }
-//            
-//        } 
-//        else if(emailValidationService.validateEmail(student.getEmail())) {
-//            throw new RuntimeException("Email address is not valid or deliverable.");
-//        }
         return studentRepository.save(student);
     }
     

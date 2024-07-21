@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cozentus.training_tracking_application.model.Teacher;
@@ -21,8 +22,6 @@ public class TeacherService {
     @Autowired
     private TeacherRepository teacherRepository;
     
-//	@Autowired
-//    private EmailValidationService emailValidationService;
     
     @Autowired
     private UserService userService;
@@ -30,6 +29,9 @@ public class TeacherService {
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+    private PasswordEncoder passwordEncoder;
 	
 	private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
@@ -47,7 +49,7 @@ public class TeacherService {
     }
 
     public Teacher saveTeacher(Teacher teacher) {
-//    	if (emailValidationService.validateEmail(teacher.getEmail())) {
+
     	
             try {
                 
@@ -57,10 +59,7 @@ public class TeacherService {
                 e.printStackTrace();
                 throw new RuntimeException("Failed to send email. Email address may be invalid.");
             }
-//        } 
-//    	else {
-//            throw new RuntimeException("Email address is not valid or deliverable.");
-//        }
+
     }
 
     public Teacher updateTeacher(Integer id,Teacher teacher) {
@@ -89,10 +88,7 @@ public class TeacherService {
             }
             
         } 
-//        else if(emailValidationService.validateEmail(teacher.getEmail())) {
-//        	System.out.println("execution9");
-//            throw new RuntimeException("Email address is not valid or deliverable.");
-//        }
+
         System.out.println("execution10");
         return teacherRepository.save(teacher);
         
@@ -111,7 +107,7 @@ public class TeacherService {
             //creating user for this teacher
             User user = new User();
             user.setUserEmail(teacher.getEmail());
-            user.setUserPassword(password);
+            user.setPassword(password);
             user.setCreatedBy("admin");
             user.setCreatedDate(new Date());
             user.setUpdatedBy("admin");
@@ -135,12 +131,11 @@ public class TeacherService {
         }
     }
     
-    //Random string generator for password
     protected String getSaltString() {
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYabcdefghijklmnopqrstuvwxyzZ1234567890";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
-        while (salt.length() == 10) { 
+        while (salt.length() <5) { 
             int index = (int) (rnd.nextFloat() * SALTCHARS.length());
             salt.append(SALTCHARS.charAt(index));
         }

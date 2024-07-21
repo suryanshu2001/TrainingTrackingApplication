@@ -1,5 +1,6 @@
 package com.cozentus.training_tracking_application.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,7 +20,11 @@ import com.cozentus.training_tracking_application.repository.BatchProgramCourseT
 import com.cozentus.training_tracking_application.repository.TeacherRepository;
 import com.cozentus.training_tracking_application.repository.TopicRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class BatchProgramCourseService {
     
     @Autowired
@@ -58,16 +63,15 @@ public class BatchProgramCourseService {
     }
     
     public BatchProgramCourse saveBatchProgramCourse(BatchProgramCourse batchProgramCourse) {
-    	for(Student student: batchProgramCourse.getStudents()) {
-    		Optional<Student> currentStudent = studentService.getStudentById(student.getStudentId());
-    		if(currentStudent.isPresent()) {
-    			currentStudent.get().setBatch(batchProgramCourse.getBatch());
-        		studentService.editStudent(currentStudent.get());
-    		}
-    		
-    	}
-    	Teacher teacher = batchProgramCourse.getTeacher();
-        if (teacher != null && teacher.getTeacherId()== null) {
+        for(Student student: batchProgramCourse.getStudents()) {
+            Optional<Student> currentStudent = studentService.getStudentById(student.getStudentId());
+            if(currentStudent.isPresent()) {
+                currentStudent.get().setBatch(batchProgramCourse.getBatch());
+                studentService.editStudent(currentStudent.get());
+            }
+        }
+        Teacher teacher = batchProgramCourse.getTeacher();
+        if (teacher != null && teacher.getTeacherId() == null) {
             teacherRepository.save(teacher);
         }
 
@@ -77,9 +81,11 @@ public class BatchProgramCourseService {
                 studentService.saveStudent(student);
             }
         }
-        BatchProgramCourse savedBatchProgramCourse=batchProgramCourseRepository.save(batchProgramCourse);
-        if(batchProgramCourse.getCourse()!=null) {
-        	Course course = savedBatchProgramCourse.getCourse();
+        
+        BatchProgramCourse savedBatchProgramCourse = batchProgramCourseRepository.save(batchProgramCourse);
+        
+        if(batchProgramCourse.getCourse() != null) {
+            Course course = savedBatchProgramCourse.getCourse();
             List<Topic> topics = topicRepository.findByCourseCourseId(course.getCourseId());
 
             for (Topic topic : topics) {
@@ -129,5 +135,29 @@ public class BatchProgramCourseService {
         return batchProgramCourseRepository.findByTeacherTeacherId(teacherId);
     }
     
-    
+    public BatchProgramCourse updateBatchProgramCourse(BatchProgramCourse batchProgramCourse) {
+        log.info("bpc: {}", batchProgramCourse);
+        batchProgramCourseRepository.findById(batchProgramCourse.getBatchProgramCourseId())
+            .orElseThrow(() -> new EntityNotFoundException("BatchProgramCourse not found"));
+        
+        Optional<BatchProgramCourse> savedBatchProgramCourse = batchProgramCourseRepository.findById(batchProgramCourse.getBatchProgramCourseId());
+        log.info("bpc: {}", batchProgramCourse);
+        
+        if(batchProgramCourse.getCourse() != null) {
+            Course course = savedBatchProgramCourse.get().getCourse();
+            List<Topic> topics = topicRepository.findByCourseCourseId(course.getCourseId());
+
+            // Update the topics using the helper method
+            savedBatchProgramCourse.get().updateBatchProgramCourseTopics(new HashSet<>(topics.stream()
+                .map(topic -> {
+                    BatchProgramCourseTopic batchProgramCourseTopic = new BatchProgramCourseTopic();
+                    batchProgramCourseTopic.setBatchProgramCourse(savedBatchProgramCourse.get());
+                    batchProgramCourseTopic.setTopic(topic);
+                    batchProgramCourseTopic.setPercentageCompleted(0);
+                    return batchProgramCourseTopic;
+                }).collect(Collectors.toSet())));
+        }
+        
+        return batchProgramCourseRepository.save(savedBatchProgramCourse.get());
+    }
 }
