@@ -20,4 +20,6 @@ public interface BatchProgramCourseRepository extends JpaRepository<BatchProgram
 
     @Query("SELECT bpc.teacher FROM BatchProgramCourse bpc WHERE bpc.batch.batchId = :batchId AND bpc.program.programId = :programId AND bpc.course.courseId = :courseId")
     Teacher findTeacherByBatchProgramAndCourse(@Param("batchId") int batchId, @Param("programId") int programId, @Param("courseId") int courseId);
+    
+    List<BatchProgramCourse> findByTeacherTeacherId(Integer teacherId);
 }

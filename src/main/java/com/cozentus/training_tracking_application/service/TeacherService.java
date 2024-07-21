@@ -3,19 +3,17 @@ package com.cozentus.training_tracking_application.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import com.cozentus.training_tracking_application.model.Student;
 import com.cozentus.training_tracking_application.model.Teacher;
+import com.cozentus.training_tracking_application.model.User;
 import com.cozentus.training_tracking_application.repository.TeacherRepository;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class TeacherService {
@@ -23,8 +21,12 @@ public class TeacherService {
     @Autowired
     private TeacherRepository teacherRepository;
     
-	@Autowired
-    private EmailValidationService emailValidationService;
+//	@Autowired
+//    private EmailValidationService emailValidationService;
+    
+    @Autowired
+    private UserService userService;
+    
 	
 	@Autowired
 	private EmailService emailService;
@@ -46,7 +48,7 @@ public class TeacherService {
 
     public Teacher saveTeacher(Teacher teacher) {
 //    	if (emailValidationService.validateEmail(teacher.getEmail())) {
-    	if (true) {	
+    	
             try {
                 
                 sendWelcomeEmail(teacher);
@@ -55,9 +57,10 @@ public class TeacherService {
                 e.printStackTrace();
                 throw new RuntimeException("Failed to send email. Email address may be invalid.");
             }
-        } else {
-            throw new RuntimeException("Email address is not valid or deliverable.");
-        }
+//        } 
+//    	else {
+//            throw new RuntimeException("Email address is not valid or deliverable.");
+//        }
     }
 
     public Teacher updateTeacher(Integer id,Teacher teacher) {
@@ -101,10 +104,21 @@ public class TeacherService {
 
     private void sendWelcomeEmail(Teacher teacher) {
         try {
-            String password = UUID.randomUUID().toString();
+            String password = getSaltString();
             String body = String.format("Welcome to Cozentus Training System, %s! \nEmail: %s \nPassword: %s",
                     teacher.getName(), teacher.getEmail(), password);
             emailService.sendEmail(teacher.getEmail(), "Welcome Email for Teacher!", body);
+            //creating user for this teacher
+            User user = new User();
+            user.setUserEmail(teacher.getEmail());
+            user.setUserPassword(password);
+            user.setCreatedBy("admin");
+            user.setCreatedDate(new Date());
+            user.setUpdatedBy("admin");
+            user.setUpdatedBy("admin");
+            user.setUsername(teacher.getName());
+            user.setUserRole("teacher");
+            userService.saveUser(user);
         } catch (Exception e) {
             e.printStackTrace(); 
         }
@@ -119,6 +133,20 @@ public class TeacherService {
         } catch (Exception e) {
             e.printStackTrace(); 
         }
+    }
+    
+    //Random string generator for password
+    protected String getSaltString() {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYabcdefghijklmnopqrstuvwxyzZ1234567890";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() == 10) { 
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+        return saltStr;
+
     }
 
 }

@@ -1,6 +1,7 @@
 package com.cozentus.training_tracking_application.model;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -15,19 +16,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
 @Entity
 @Table(name = "BatchProgramCourse")
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-//@ToString
+@Data
 public class BatchProgramCourse {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,6 +44,10 @@ public class BatchProgramCourse {
     @JsonIgnoreProperties({"batchProgramCourses","programs"})
     private Course course;
     
+    @OneToMany(mappedBy = "batchProgramCourse", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("batchProgramCourse")
+    private List<BatchProgramCourseTopic> batchProgramCourseTopics;
+    
     @ManyToOne
     @JoinColumn(name="teacher_id")
     @JsonIgnoreProperties("batchProgramCourses")
@@ -62,6 +61,6 @@ public class BatchProgramCourse {
     )
     @JsonIgnoreProperties({"teacher","program","topics","batch","course","batchProgramCourses"})
     private Set<Student> students = new HashSet<>();
-    
+ 
     
 }

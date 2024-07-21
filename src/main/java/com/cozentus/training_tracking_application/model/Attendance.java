@@ -1,10 +1,16 @@
 package com.cozentus.training_tracking_application.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,16 +18,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "Attendance")
 @Data
+@EqualsAndHashCode(exclude = {"batchProgramCourse", "attendanceStudents"})
 public class Attendance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,29 +37,31 @@ public class Attendance {
     private Date date;
 
     @ManyToOne
-    @JoinColumn(name = "batch_id")
-    private Batch batch;
+    @JoinColumn(name = "batch_program_course_id")
+    @JsonIgnoreProperties({"teacher","batch","program","students","course"})
+    private BatchProgramCourse batchProgramCourse;
+    
+    @OneToMany(mappedBy = "attendance", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties
+    private Set<AttendanceStudent> attendanceStudents = new HashSet<>();
+    
+    @OneToMany(mappedBy = "attendance")
+    @JsonIgnoreProperties("attendance")
+    private List<DailyTopicCoverage> dailyTopicCoverages;
+    
+    @Column(name="created_date")
+    @CreationTimestamp
+    private Date createdDate;
 
-    @ManyToOne
-    @JoinColumn(name = "program_id")
-    private Program program;
+    @Column(name="updated_date")
+    @UpdateTimestamp
+    private Date updatedDate;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
+    @Column(name="created_by")
+    private String createdBy="teacher";
 
-    @Column(nullable = false)
-    private Date created_date;
+    @Column(name="updated_by")
+    private String updatedBy="teacher";
 
-    @Column(nullable = false)
-    private Date updated_date;
-
-    @Column(nullable = false)
-    private String created_by;
-
-    @Column(nullable = false)
-    private String updated_by;
-
-    // Getters and setters
 }
 

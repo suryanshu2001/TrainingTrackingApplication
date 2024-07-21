@@ -124,5 +124,10 @@ public class BatchProgramCourseService {
     	}
     }
     
+    //Method to get all the batchProgramCourses for a particular teacher
+    public List<BatchProgramCourse> getBatchProgramCoursesByTeacherId(Integer teacherId) {
+        return batchProgramCourseRepository.findByTeacherTeacherId(teacherId);
+    }
+    
     
 }

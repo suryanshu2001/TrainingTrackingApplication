@@ -3,6 +3,7 @@ package com.cozentus.training_tracking_application.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,33 +63,27 @@ public class BatchProgramCourseController {
     public BatchProgramCourse updateBatchProgramCourse(@PathVariable Integer id, @RequestBody BatchProgramCourse batchProgramCourse) {
         BatchProgramCourse existingBatchProgramCourse = batchProgramCourseService.getBatchProgramCourseById(id);
         System.out.println("existing batchdetail:"+existingBatchProgramCourse.getBatchProgramCourseId());
-        if (existingBatchProgramCourse != null) {
-            batchProgramCourse.setBatchProgramCourseId(id);
-            batchProgramCourse.setBatch(existingBatchProgramCourse.getBatch());
-            batchProgramCourse.setProgram(existingBatchProgramCourse.getProgram());
-            if(batchProgramCourse.getStudents().isEmpty()) {
-            batchProgramCourse.setStudents(existingBatchProgramCourse.getStudents());
-            }
-            return batchProgramCourseService.saveBatchProgramCourse(batchProgramCourse);
-        }
-        return null;
+        batchProgramCourse.setBatchProgramCourseId(id);
+		batchProgramCourse.setBatch(existingBatchProgramCourse.getBatch());
+		batchProgramCourse.setProgram(existingBatchProgramCourse.getProgram());
+		if (batchProgramCourse.getStudents().isEmpty()) {
+			batchProgramCourse.setStudents(existingBatchProgramCourse.getStudents());
+		}
+		return batchProgramCourseService.saveBatchProgramCourse(batchProgramCourse);
     }
     
     @PutMapping("/teacher/{id}")
     public BatchProgramCourse updateBatchProgramCourseteacher(@PathVariable Integer id, @RequestBody BatchProgramCourse batchProgramCourse) {
         BatchProgramCourse existingBatchProgramCourse = batchProgramCourseService.getBatchProgramCourseById(id);
         System.out.println("existing batchdetail:"+existingBatchProgramCourse.getBatchProgramCourseId());
-        if (existingBatchProgramCourse != null) {
-            batchProgramCourse.setBatchProgramCourseId(id);
-            batchProgramCourse.setBatch(existingBatchProgramCourse.getBatch());
-            batchProgramCourse.setProgram(existingBatchProgramCourse.getProgram());
-            if(batchProgramCourse.getStudents().isEmpty()) {
-            batchProgramCourse.setStudents(existingBatchProgramCourse.getStudents());
-            }
-            batchProgramCourse.setCourse(existingBatchProgramCourse.getCourse());
-            return batchProgramCourseService.saveBatchProgramCourse(batchProgramCourse);
-        }
-        return null;
+        batchProgramCourse.setBatchProgramCourseId(id);
+		batchProgramCourse.setBatch(existingBatchProgramCourse.getBatch());
+		batchProgramCourse.setProgram(existingBatchProgramCourse.getProgram());
+		if (batchProgramCourse.getStudents().isEmpty()) {
+			batchProgramCourse.setStudents(existingBatchProgramCourse.getStudents());
+		}
+		batchProgramCourse.setCourse(existingBatchProgramCourse.getCourse());
+		return batchProgramCourseService.saveBatchProgramCourse(batchProgramCourse);
     }
 
     @DeleteMapping("/{id}")
@@ -99,5 +94,11 @@ public class BatchProgramCourseController {
     @DeleteMapping("/program/{id}")
     public void deleteBatchProgramCourseProgram(@PathVariable Integer id) {
         batchProgramCourseService.deleteBatchProgramCourseProgram(id);
+    }
+    
+    @GetMapping("/teacher/{teacherId}")
+    public ResponseEntity<List<BatchProgramCourse>> getBatchProgramCoursesByTeacherId(@PathVariable Integer teacherId) {
+        List<BatchProgramCourse> batchProgramCourses = batchProgramCourseService.getBatchProgramCoursesByTeacherId(teacherId);
+        return ResponseEntity.ok(batchProgramCourses);
     }
 }

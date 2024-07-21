@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cozentus.training_tracking_application.dao.ProgramWithStudentsDTO;
+import com.cozentus.training_tracking_application.dto.ProgramWithStudentsDTO;
 import com.cozentus.training_tracking_application.model.Program;
 import com.cozentus.training_tracking_application.service.ProgramService;
 

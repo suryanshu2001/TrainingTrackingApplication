@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.cozentus.training_tracking_application.dao.EmailValidationResponse;
+import com.cozentus.training_tracking_application.dto.EmailValidationResponse;
 
 @Service
 public class EmailValidationService {

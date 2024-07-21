@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cozentus.training_tracking_application.dao.ProgramWithStudentsDTO;
-import com.cozentus.training_tracking_application.dao.StudentDTO;
+import com.cozentus.training_tracking_application.dto.ProgramWithStudentsDTO;
+import com.cozentus.training_tracking_application.dto.StudentDTO;
 import com.cozentus.training_tracking_application.model.BatchProgramCourse;
 import com.cozentus.training_tracking_application.model.Program;
 import com.cozentus.training_tracking_application.model.Student;

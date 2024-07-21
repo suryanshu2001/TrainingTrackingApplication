@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +20,7 @@ import com.cozentus.training_tracking_application.service.BatchProgramCourseTopi
 
 @RestController
 @RequestMapping("/batchProgramCourseTopics")
+@CrossOrigin
 public class BatchProgramCourseTopicController {
 
     @Autowired
@@ -35,6 +38,15 @@ public class BatchProgramCourseTopicController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(batchProgramCourseTopic);
+    }
+    
+    @GetMapping("/batchProgramCourse/{batchProgramCourseId}")
+    public ResponseEntity<List<BatchProgramCourseTopic>> getBatchProgramCourseTopicByBatchProgramCourseId(@PathVariable Integer batchProgramCourseId) {
+        List<BatchProgramCourseTopic> batchProgramCourseTopics = batchProgramCourseTopicService.getBatchProgramCourseTopicsByBatchProgramCourse(batchProgramCourseId);
+        if (batchProgramCourseTopics == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(batchProgramCourseTopics);
     }
 
     @PostMapping
@@ -66,5 +78,11 @@ public class BatchProgramCourseTopicController {
 
         batchProgramCourseTopicService.deleteBatchProgramCourseTopic(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    @PatchMapping
+    public ResponseEntity<BatchProgramCourseTopic> updateBatchProgramCourseTopic(@RequestBody BatchProgramCourseTopic batchProgramCourseTopic){
+    	BatchProgramCourseTopic updatedBatchProgramCourseTopic = batchProgramCourseTopicService.updateBatchProgramCourseTopic(batchProgramCourseTopic);
+    	return ResponseEntity.ok(updatedBatchProgramCourseTopic);
     }
 }

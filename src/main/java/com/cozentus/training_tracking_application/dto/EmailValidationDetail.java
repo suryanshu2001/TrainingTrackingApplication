@@ -1,4 +1,4 @@
-package com.cozentus.training_tracking_application.dao;
+package com.cozentus.training_tracking_application.dto;
 
 public class EmailValidationDetail {
 	private boolean value;

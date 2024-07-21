@@ -1,4 +1,4 @@
-package com.cozentus.training_tracking_application.dao;
+package com.cozentus.training_tracking_application.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

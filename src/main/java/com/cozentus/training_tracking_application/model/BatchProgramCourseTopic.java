@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,7 +26,7 @@ public class BatchProgramCourseTopic {
 
     @ManyToOne
     @JoinColumn(name = "batch_program_course_id")
-    @JsonIgnoreProperties({"batchProgramCourses", "course", "teacher"})
+    @JsonIgnoreProperties({"batchProgramCourses", "teacher","batch","program","students","course.teachers"})
     private BatchProgramCourse batchProgramCourse;
 
     @ManyToOne
